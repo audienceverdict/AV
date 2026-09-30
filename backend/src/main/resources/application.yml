@@ -1,0 +1,36 @@
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/movie_booking?createDatabaseIfNotExist=true}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+jwt:
+  secret: ${JWT_SECRET}
+  expiration-ms: ${JWT_EXPIRATION_MS:3600000}
+auth:
+  mobile:
+    country-code: ${MOBILE_COUNTRY_CODE:91}
+    national-length: ${MOBILE_NATIONAL_LENGTH:10}
+  otp:
+    expiration-seconds: ${OTP_EXPIRATION_SECONDS:300}
+    resend-cooldown-seconds: ${OTP_RESEND_COOLDOWN_SECONDS:30}
+    max-attempts: ${OTP_MAX_ATTEMPTS:5}
+    max-requests-per-hour: ${OTP_MAX_REQUESTS_PER_HOUR:10}
+app:
+  cors-origins: ${FRONTEND_ORIGINS:http://localhost:5173}
+  admin:
+    mobile: ${ADMIN_MOBILE:}
+sms:
+  webhook-url: ${SMS_WEBHOOK_URL:}
+  api-token: ${SMS_API_TOKEN:}
+server:
+  error:
+    include-message: never
