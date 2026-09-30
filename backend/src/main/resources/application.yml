@@ -1,8 +1,10 @@
 spring:
+  profiles:
+    default: dev
   datasource:
     url: ${DB_URL:jdbc:mysql://localhost:3306/movie_booking?createDatabaseIfNotExist=true}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    username: ${DB_USERNAME:movie_user}
+    password: ${DB_PASSWORD:movie_password}
   jpa:
     open-in-view: false
     hibernate:
@@ -13,7 +15,7 @@ spring:
     deserialization:
       fail-on-unknown-properties: true
 jwt:
-  secret: ${JWT_SECRET}
+  secret: ${JWT_SECRET:MovieBookingLocalJwtSecretKeyChangeMe2026}
   expiration-ms: ${JWT_EXPIRATION_MS:3600000}
 auth:
   mobile:

@@ -14,7 +14,7 @@ import java.util.*;
  @Transactional public void delete(String id){get(id).status=ActiveStatus.INACTIVE;}
  public List<Screen> screens(String theatreId){get(theatreId);return screens.findByTheatreId(theatreId);}
  @Transactional public Screen createScreen(String theatreId,Screen s){get(theatreId);s.id=UUID.randomUUID().toString();s.theatreId=theatreId;attachSeats(s);return screens.save(s);}
- @Transactional public Screen updateScreen(String id,Screen next){var s=screens.findById(id).orElseThrow(()->new ApiException(404,"SCREEN_NOT_FOUND","Screen not found"));s.name=next.name;s.number=next.number;s.rows=next.rows;s.seatsPerRow=next.seatsPerRow;s.status=next.status;s.seats.clear();if(next.seats!=null){next.seats.forEach(seat->{seat.id=seat.id==null||seat.id.isBlank()?s.id+":"+seat.label:seat.id;seat.screen=s;s.seats.add(seat);});}return s;}
+ @Transactional public Screen updateScreen(String id,Screen next){var s=screens.findById(id).orElseThrow(()->new ApiException(404,"SCREEN_NOT_FOUND","Screen not found"));s.name=next.name;s.number=next.number;s.rows=next.rows;s.seatsPerRow=next.seatsPerRow;s.status=next.status;s.seats.clear();screens.saveAndFlush(s);if(next.seats!=null){next.seats.forEach(seat->{seat.id=seat.id==null||seat.id.isBlank()?s.id+":"+seat.label:seat.id;seat.screen=s;s.seats.add(seat);});}return screens.saveAndFlush(s);}
  private void attachMedia(Theatre t){if(t.media!=null)t.media.forEach(m->{m.id=UUID.randomUUID().toString();m.theatre=t;});}
  private void attachSeats(Screen s){if(s.seats!=null)s.seats.forEach(seat->{seat.id=seat.id==null||seat.id.isBlank()?UUID.randomUUID().toString():seat.id;seat.screen=s;});}
 }

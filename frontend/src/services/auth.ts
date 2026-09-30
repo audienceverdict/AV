@@ -20,7 +20,7 @@ export const authService={
  async verifyOtp(mobile:string,otp:string){const started=generation;const result=await request<{user:User;accessToken:string;tokenType:string}>('/auth/otp/verify',{method:'POST',body:JSON.stringify({mobile,otp})});if(started!==generation)throw new Error('Sign-in cancelled');sessionStorage.setItem(TOKEN_KEY,result.accessToken);currentUser=mapUser(result.user);notify();return currentUser;},
  async restore(){const started=generation;if(!token()){currentUser=null;notify();return null;}const user=await request<User>('/auth/me');if(started!==generation)return null;currentUser=mapUser(user);notify();return currentUser;},
  async updateProfile(name:string,email:string){const started=generation;const user=await request<User>('/auth/me',{method:'PUT',body:JSON.stringify({name,email:email.trim()||null})});if(started===generation){currentUser=mapUser(user);notify();}return mapUser(user);},
- logout(){generation++;sessionStorage.removeItem(TOKEN_KEY);currentUser=null;localStorage.removeItem('av_current_user');localStorage.removeItem('av_admin_session');localStorage.removeItem('av_demo_challenge');notify();}
+ logout(){generation++;sessionStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem('av_otp_mobile');sessionStorage.removeItem('av_otp_resend_at');sessionStorage.removeItem('av_otp_expires_at');currentUser=null;notify();}
 };
 export interface UserPage {content:User[];totalPages:number;totalElements:number;number:number}
 export const adminUsers={

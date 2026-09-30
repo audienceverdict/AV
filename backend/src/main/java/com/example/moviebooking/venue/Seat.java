@@ -8,6 +8,6 @@ public class Seat {
  @Column(nullable=false,length=20) public String label;
  @Enumerated(EnumType.STRING) @Column(nullable=false,length=20) public SeatCategory category=SeatCategory.REGULAR;
  @Column(nullable=false) public boolean disabled=false;
- @Column(nullable=false) public int rowNumber;
+ @Column(name="`row_number`",nullable=false) public int rowNumber;
  @Column(nullable=false) public int columnNumber;
 }
