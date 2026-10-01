@@ -15,6 +15,7 @@ public class TheatreController {
  @GetMapping("/{id}/screens") public List<Screen> screens(@PathVariable String id){return service.screens(id);}
  @PostMapping("/{id}/screens") public Screen createScreen(@PathVariable String id,@RequestBody Screen screen){return service.createScreen(id,screen);}
  @PutMapping("/screens/{screenId}") public Screen updateScreen(@PathVariable String screenId,@RequestBody Screen screen){return service.updateScreen(screenId,screen);}
+ @DeleteMapping("/screens/{screenId}") public void deleteScreen(@PathVariable String screenId){service.deleteScreen(screenId);}
  @GetMapping("/screens/{screenId}/layout-versions") public List<LayoutVersion> layoutVersions(@PathVariable String screenId){return service.layoutVersions(screenId);}
  @GetMapping("/screens/{screenId}/layout-versions/{versionId}") public Map<String,Object> layoutDetails(@PathVariable String screenId,@PathVariable String versionId){return service.layoutDetails(screenId,versionId);}
  @PostMapping("/screens/{screenId}/layout-versions") public LayoutVersion createLayoutVersion(@PathVariable String screenId,@RequestParam(defaultValue="") String name,@RequestParam(required=false) String sourceVersionId){return service.createLayoutVersion(screenId,sourceVersionId,name);}

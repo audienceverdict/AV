@@ -13,5 +13,6 @@ public class BookingController {
  @PostMapping public Booking create(Principal p,@Valid @RequestBody CreateBookingRequest r){return service.create(p,r);}
  @PostMapping("/{id}/cancel") public Booking cancel(@PathVariable String id,Principal p){return service.cancel(id,p);}
  @PostMapping("/admin/{id}/confirm") public Booking confirm(@PathVariable String id){return service.adminConfirm(id);}
+ @PostMapping("/admin/{id}/cancel") public Booking adminCancel(@PathVariable String id){return service.adminCancel(id);}
  @PostMapping("/admin/{id}/attendance") public Booking attended(@PathVariable String id,@RequestParam boolean attended){return service.markAttended(id,attended);}
 }

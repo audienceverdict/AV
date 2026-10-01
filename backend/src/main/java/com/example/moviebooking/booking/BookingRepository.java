@@ -4,6 +4,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.*;
 public interface BookingRepository extends JpaRepository<Booking,String> {
  List<Booking> findByUserIdOrderByCreatedAtDesc(String userId);
+ long countByShowId(String showId);
  @Query("select b from Booking b where b.showId=:showId and b.mobile=:mobile and b.status in :statuses")
  List<Booking> activeByMobile(@Param("showId") String showId,@Param("mobile") String mobile,@Param("statuses") Collection<BookingStatus> statuses);
  @Query("select seat from Booking b join b.seatIds seat where b.showId=:showId and b.status in :statuses")
