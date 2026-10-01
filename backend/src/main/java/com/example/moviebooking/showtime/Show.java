@@ -3,6 +3,9 @@ import jakarta.persistence.*;
 import java.math.BigDecimal;
 import java.time.*;
 import java.util.UUID;
+import java.util.Map;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 @Entity @Table(name="shows")
 public class Show {
  @Id @Column(length=36) public String id=UUID.randomUUID().toString();
@@ -15,6 +18,9 @@ public class Show {
  @Enumerated(EnumType.STRING) @Column(nullable=false,length=20) public TicketType ticketType=TicketType.PAID;
  @Column(nullable=false,precision=10,scale=2) public BigDecimal ticketPrice=BigDecimal.ZERO;
  @Column(nullable=false) public int maxTicketsPerMobile=6;
+ @Column(nullable=false) public int layoutVersion=1;
+ @JdbcTypeCode(SqlTypes.JSON) @Column(columnDefinition="json") public Map<String,BigDecimal> seatPrices=new java.util.HashMap<>();
+ @Column(name="layout_version_id", length=36) public String layoutVersionId;
  @Column(nullable=false) public boolean requireAdminConfirmation=false;
  public Instant bookingOpens;
  public Instant bookingCloses;

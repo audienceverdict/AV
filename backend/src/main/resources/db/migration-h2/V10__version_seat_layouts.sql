@@ -1,0 +1,2 @@
+ALTER TABLE screens ADD COLUMN layout_version INT NOT NULL DEFAULT 1;
+ALTER TABLE shows ADD COLUMN layout_version INT NOT NULL DEFAULT 1;

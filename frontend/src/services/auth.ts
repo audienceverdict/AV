@@ -3,7 +3,7 @@ const TOKEN_KEY='av_access_token';
 let currentUser:User|null=null;
 let generation=0;
 const notify=()=>window.dispatchEvent(new Event('av-auth-change'));
-const token=()=>sessionStorage.getItem(TOKEN_KEY);
+const token=()=>localStorage.getItem(TOKEN_KEY)||sessionStorage.getItem(TOKEN_KEY);
 export class ApiError extends Error {constructor(message:string,public status:number){super(message);}}
 async function request<T>(path:string,options:RequestInit={}):Promise<T>{
  const accessToken=token();
@@ -17,10 +17,10 @@ export const authService={
  current:()=>currentUser,
  isAdmin:()=>currentUser?.role==='ADMIN',
  async requestOtp(mobile:string){return request<{success:boolean;message:string;expiresInSeconds:number;resendAfterSeconds:number}>('/auth/otp/request',{method:'POST',body:JSON.stringify({mobile})});},
- async verifyOtp(mobile:string,otp:string){const started=generation;const result=await request<{user:User;accessToken:string;tokenType:string}>('/auth/otp/verify',{method:'POST',body:JSON.stringify({mobile,otp})});if(started!==generation)throw new Error('Sign-in cancelled');sessionStorage.setItem(TOKEN_KEY,result.accessToken);currentUser=mapUser(result.user);notify();return currentUser;},
+ async verifyOtp(mobile:string,otp:string){const started=generation;const result=await request<{user:User;accessToken:string;tokenType:string}>('/auth/otp/verify',{method:'POST',body:JSON.stringify({mobile,otp})});if(started!==generation)throw new Error('Sign-in cancelled');localStorage.setItem(TOKEN_KEY,result.accessToken);sessionStorage.setItem(TOKEN_KEY,result.accessToken);currentUser=mapUser(result.user);notify();return currentUser;},
  async restore(){const started=generation;if(!token()){currentUser=null;notify();return null;}const user=await request<User>('/auth/me');if(started!==generation)return null;currentUser=mapUser(user);notify();return currentUser;},
  async updateProfile(name:string,email:string){const started=generation;const user=await request<User>('/auth/me',{method:'PUT',body:JSON.stringify({name,email:email.trim()||null})});if(started===generation){currentUser=mapUser(user);notify();}return mapUser(user);},
- logout(){generation++;sessionStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem('av_otp_mobile');sessionStorage.removeItem('av_otp_resend_at');sessionStorage.removeItem('av_otp_expires_at');currentUser=null;notify();}
+ logout(){generation++;localStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem('av_otp_mobile');sessionStorage.removeItem('av_otp_resend_at');sessionStorage.removeItem('av_otp_expires_at');currentUser=null;notify();}
 };
 export interface UserPage {content:User[];totalPages:number;totalElements:number;number:number}
 export const adminUsers={

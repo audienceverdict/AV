@@ -1,4 +1,6 @@
 spring:
+  flyway:
+    locations: classpath:db/migration-h2
   datasource:
     url: jdbc:h2:mem:auth;MODE=MySQL;DB_CLOSE_DELAY=-1
     username: sa

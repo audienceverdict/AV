@@ -15,4 +15,9 @@ public class TheatreController {
  @GetMapping("/{id}/screens") public List<Screen> screens(@PathVariable String id){return service.screens(id);}
  @PostMapping("/{id}/screens") public Screen createScreen(@PathVariable String id,@RequestBody Screen screen){return service.createScreen(id,screen);}
  @PutMapping("/screens/{screenId}") public Screen updateScreen(@PathVariable String screenId,@RequestBody Screen screen){return service.updateScreen(screenId,screen);}
+ @GetMapping("/screens/{screenId}/layout-versions") public List<LayoutVersion> layoutVersions(@PathVariable String screenId){return service.layoutVersions(screenId);}
+ @GetMapping("/screens/{screenId}/layout-versions/{versionId}") public Map<String,Object> layoutDetails(@PathVariable String screenId,@PathVariable String versionId){return service.layoutDetails(screenId,versionId);}
+ @PostMapping("/screens/{screenId}/layout-versions") public LayoutVersion createLayoutVersion(@PathVariable String screenId,@RequestParam(defaultValue="") String name,@RequestParam(required=false) String sourceVersionId){return service.createLayoutVersion(screenId,sourceVersionId,name);}
+ @PutMapping("/screens/{screenId}/layout-versions/{versionId}/seats") public List<LayoutSeat> saveLayoutSeats(@PathVariable String screenId,@PathVariable String versionId,@RequestBody List<LayoutSeat> seats){return service.saveLayoutSeats(screenId,versionId,seats);}
+ @PostMapping("/screens/{screenId}/layout-versions/{versionId}/publish") public LayoutVersion publishLayoutVersion(@PathVariable String screenId,@PathVariable String versionId){return service.publishLayoutVersion(screenId,versionId);}
 }

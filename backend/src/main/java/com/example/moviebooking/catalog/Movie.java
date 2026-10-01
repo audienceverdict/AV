@@ -6,9 +6,9 @@ import java.util.*;
 public class Movie {
  @Id @Column(length=36) public String id=UUID.randomUUID().toString();
  @Column(nullable=false,length=200) public String title;
- @Column(nullable=false,length=500) public String posterUrl;
- @Column(length=500) public String backdropUrl;
- @Column(length=500) public String trailerUrl;
+ @Column(nullable=false,length=2000) public String posterUrl;
+ @Column(length=2000) public String backdropUrl;
+ @Column(length=2000) public String trailerUrl;
  @Column(length=2000) public String description;
  @ElementCollection(fetch=FetchType.EAGER) @CollectionTable(name="movie_genres",joinColumns=@JoinColumn(name="movie_id")) @Column(name="genre",length=80) public List<String> genre=new ArrayList<>();
  @Column(nullable=false,length=80) public String language;

@@ -1,0 +1,1 @@
+ALTER TABLE shows ADD COLUMN seat_prices JSON NOT NULL DEFAULT ('{}');

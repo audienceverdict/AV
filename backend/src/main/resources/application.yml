@@ -16,7 +16,7 @@ spring:
       fail-on-unknown-properties: true
 jwt:
   secret: ${JWT_SECRET:MovieBookingLocalJwtSecretKeyChangeMe2026}
-  expiration-ms: ${JWT_EXPIRATION_MS:3600000}
+  expiration-ms: ${JWT_EXPIRATION_MS:2592000000}
 auth:
   mobile:
     country-code: ${MOBILE_COUNTRY_CODE:91}

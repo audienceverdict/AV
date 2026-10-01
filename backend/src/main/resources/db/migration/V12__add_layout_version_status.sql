@@ -1,0 +1,2 @@
+ALTER TABLE layout_versions ADD COLUMN status VARCHAR(20) NOT NULL DEFAULT 'DRAFT';
+ALTER TABLE layout_versions ADD COLUMN published_at TIMESTAMP NULL;
