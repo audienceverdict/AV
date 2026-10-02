@@ -10,4 +10,5 @@ import java.security.Principal;
  @PostMapping("/otp/verify") public AuthResponse verify(@Valid @RequestBody OtpVerifyRequest r){return service.verify(r);}
  @GetMapping("/me") public UserResponse me(Principal p){return service.current(p.getName());}
  @PutMapping("/me") public UserResponse update(Principal p,@Valid @RequestBody UpdateProfileRequest r){return service.update(p.getName(),r);}
+ @PostMapping("/register") public UserResponse register(Principal p,@Valid @RequestBody RegistrationRequest r){return service.register(p.getName(),r);}
 }

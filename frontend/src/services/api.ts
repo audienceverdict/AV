@@ -1,4 +1,4 @@
-import type { Data, Booking, User } from '../types';
+﻿import type { Data, Booking, User } from '../types';
 import { seed, seatsFor } from '../data/seed';
 const KEY='av_data_v2';
 const memoryStore=new Map<string,unknown>();
@@ -24,7 +24,7 @@ export interface NotificationService {prepare(booking:Booking):Promise<string>}
 export const mockNotificationService:NotificationService={async prepare(){return 'Demo: ticket email and mobile confirmation prepared. Nothing was sent.';}};
 export {authService} from './auth';
 export async function adminConfirmBooking(id:string){const saved=await apiWrite<any>(`/bookings/admin/${encodeURIComponent(id)}/confirm`,{method:'POST'});const normalized={...saved,snapshot:{movie:saved.movie,theatre:saved.theatre,screen:saved.screen,date:saved.date,time:saved.time,mobile:saved.mobile,email:saved.email}};database.update(data=>{const index=data.bookings.findIndex(item=>item.id===id);if(index>=0)data.bookings[index]={...data.bookings[index],...normalized};});return normalized;}
-export async function adminCancelBooking(id:string){return apiWrite<any>(`/bookings/admin/${encodeURIComponent(id)}/cancel`,{method:'POST'});}
+export async function adminCancelBooking(id:string,reason:string){return apiWrite<any>(`/bookings/admin/${encodeURIComponent(id)}/cancel`,{method:'POST',body:JSON.stringify({reason})});}
 export async function adminMarkAttendance(id:string,attended=true){return apiWrite<any>(`/bookings/admin/${encodeURIComponent(id)}/attendance?attended=${attended}`,{method:'POST'});}
 export async function listLayoutVersions(screenId:string){return apiGet<any[]>(`/theatres/screens/${screenId}/layout-versions`);}
 export async function saveLayoutVersion(screenId:string,name:string,sourceVersionId?:string){const query=new URLSearchParams({name});if(sourceVersionId)query.set('sourceVersionId',sourceVersionId);return apiWrite<any>(`/theatres/screens/${screenId}/layout-versions?${query}`,{method:'POST'});}
@@ -42,8 +42,8 @@ export function validateBooking(data:Data,user:User,showId:string,seatIds:string
  if(seatIds.some(id=>!screen.seats.some(s=>s.id===id&&!s.disabled)||active.some(b=>b.seatIds.includes(id))))throw new Error('A selected seat is already booked or unavailable. Please choose another seat.');
  return show;
 }
-export async function createBooking(user:User,showId:string,seatIds:string[]){
- const backendBooking=await apiWrite<any>('/bookings',{method:'POST',body:JSON.stringify({showId,seatIds})});
+export async function createBooking(user:User,showId:string,seatIds:string[],alternativeMobile?:string,termsAccepted=true){
+ const backendBooking=await apiWrite<any>('/bookings',{method:'POST',body:JSON.stringify({showId,seatIds,alternativeMobile,termsAccepted})});
  const persisted:Booking={id:backendBooking.id,userId:backendBooking.userId,showId:backendBooking.showId,seatIds:backendBooking.seatIds,ticketCount:backendBooking.ticketCount,totalAmount:Number(backendBooking.totalAmount),status:backendBooking.status,confirmationStatus:backendBooking.confirmationStatus,createdAt:backendBooking.createdAt,attended:Boolean(backendBooking.attended),notification:backendBooking.notification||'',snapshot:{movie:backendBooking.movie,theatre:backendBooking.theatre,screen:backendBooking.screen,date:backendBooking.date,time:backendBooking.time,mobile:backendBooking.mobile,email:backendBooking.email}};
  database.update(data=>{data.bookings=[...data.bookings.filter(item=>item.id!==persisted.id),persisted];});
  return persisted;
@@ -72,4 +72,14 @@ export function ensureSampleCatalogue(){
  });
 }
 
+
+
+export async function createSeatHold(showId:string,seatIds:string[]){return apiWrite<any[]>(`/bookings/seat-holds`,{method:'POST',body:JSON.stringify({showId,seatIds})});}
+export async function getSeatHolds(showId:string){return apiGet<any[]>(`/bookings/seat-holds?showId=${encodeURIComponent(showId)}`);}
+export async function joinWaitingList(showId:string,requestedSeatsCount:number){return apiWrite<any>('/waiting-list',{method:'POST',body:JSON.stringify({showId,requestedSeatsCount})});}
+export async function getWaitingList(){return apiGet<any[]>('/waiting-list');}
+export async function leaveWaitingList(id:string){return apiWrite(`/waiting-list/${encodeURIComponent(id)}`,{method:'DELETE'});}
+export async function claimWaitingList(id:string){return apiWrite<any>(`/waiting-list/${encodeURIComponent(id)}/claim`,{method:'POST'});}
+export async function getNotifications(){return apiGet<any[]>('/notifications');}
+export async function cancelBooking(id:string,seatIds?:string[]){return apiWrite<any>(`/bookings/${encodeURIComponent(id)}/cancel`,{method:'POST',body:JSON.stringify({seatIds})});}
 

@@ -36,3 +36,7 @@ sms:
 server:
   error:
     include-message: never
+
+booking:
+  seat-hold-minutes: ${BOOKING_SEAT_HOLD_MINUTES:5}
+  waiting-list-offer-minutes: ${BOOKING_WAITING_LIST_OFFER_MINUTES:5}

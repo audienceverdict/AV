@@ -1,0 +1,1 @@
+ALTER TABLE shows ADD COLUMN hold_minutes INT NOT NULL DEFAULT 5;

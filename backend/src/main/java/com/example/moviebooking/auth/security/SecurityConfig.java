@@ -18,6 +18,8 @@ import java.util.*;
   .requestMatchers(HttpMethod.POST,"/api/v1/auth/otp/request","/api/v1/auth/otp/verify").permitAll()
   .requestMatchers(HttpMethod.GET,"/api/v1/auth/me").authenticated()
   .requestMatchers("/api/v1/admin/**","/api/v1/bookings/admin/**","/api/v1/reviews/admin/**").hasRole("ADMIN")
+  .requestMatchers("/api/v1/waiting-list/admin").hasRole("ADMIN")
+  .requestMatchers("/api/v1/notifications").authenticated()
   .requestMatchers(HttpMethod.GET,"/api/v1/**").permitAll()
   .requestMatchers(HttpMethod.POST,"/api/v1/movies/**","/api/v1/theatres/**","/api/v1/shows/**").hasRole("ADMIN")
   .requestMatchers(HttpMethod.PUT,"/api/v1/movies/**","/api/v1/theatres/**","/api/v1/shows/**").hasRole("ADMIN")

@@ -22,6 +22,8 @@ public class Booking {
  @Column(nullable=false,length=30) public String mobile;
  @Column(length=180) public String email;
  @Column(length=500) public String notification;
+ @Column(length=500) public String cancellationReason;
+ @Column(length=32,unique=true) public String ticketCode="AV-"+UUID.randomUUID().toString().replace("-","").substring(0,12).toUpperCase();
  @Column(nullable=false) public Instant createdAt=Instant.now();
  @Column(nullable=false) public Instant updatedAt=Instant.now();
  @PreUpdate void touch(){updatedAt=Instant.now();}

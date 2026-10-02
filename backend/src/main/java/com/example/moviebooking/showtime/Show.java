@@ -18,6 +18,7 @@ public class Show {
  @Enumerated(EnumType.STRING) @Column(nullable=false,length=20) public TicketType ticketType=TicketType.PAID;
  @Column(nullable=false,precision=10,scale=2) public BigDecimal ticketPrice=BigDecimal.ZERO;
  @Column(nullable=false) public int maxTicketsPerMobile=6;
+ @Column(nullable=false) public int holdMinutes=5;
  @Column(nullable=false) public int layoutVersion=1;
  @JdbcTypeCode(SqlTypes.JSON) @Column(columnDefinition="json") public Map<String,BigDecimal> seatPrices=new java.util.HashMap<>();
  @Column(name="layout_version_id", length=36) public String layoutVersionId;
