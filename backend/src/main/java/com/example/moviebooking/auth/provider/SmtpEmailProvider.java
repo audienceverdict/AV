@@ -6,6 +6,11 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.core.io.ByteArrayResource;
+import java.util.Base64;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -30,5 +35,14 @@ public class SmtpEmailProvider implements EmailProvider {
             log.warn("SMTP delivery failed for host {} (cause type: {})", host, cause.getClass().getSimpleName());
             throw new ApiException(503, "EMAIL_UNAVAILABLE", "Unable to send email. Please try again later.");
         }
+    }
+    @Override public void sendHtml(String to, String subject, String plainText, String html, String inlinePosterDataUri) {
+        if(host.isBlank()&&development){log.info("LOCAL DEVELOPMENT ONLY - Email to {} | {} | {}",to,subject,plainText);return;}
+        try {
+            var message=mail.createMimeMessage();var helper=new MimeMessageHelper(message,true,"UTF-8");
+            helper.setFrom(from);helper.setTo(to);helper.setSubject(subject);helper.setText(plainText,html);
+            if(inlinePosterDataUri!=null){Matcher match=Pattern.compile("(?is)^data:(image/(?:png|jpeg|webp));base64,([a-z0-9+/=\\r\\n]+)$").matcher(inlinePosterDataUri);if(match.matches())helper.addInline("movie-poster",new ByteArrayResource(Base64.getMimeDecoder().decode(match.group(2))),match.group(1));}
+            mail.send(message);
+        } catch(Exception e){Throwable cause=e;while(cause.getCause()!=null&&cause.getCause()!=cause)cause=cause.getCause();log.warn("SMTP delivery failed for host {} (cause type: {})",host,cause.getClass().getSimpleName());throw new ApiException(503,"EMAIL_UNAVAILABLE","Unable to send email. Please try again later.");}
     }
 }

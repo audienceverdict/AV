@@ -26,9 +26,6 @@ spring:
       mail.smtp.starttls.enable: ${SMTP_STARTTLS:true}
 notifications:
   email-from: ${NOTIFICATION_EMAIL_FROM:}
-whatsapp:
-  webhook-url: ${WHATSAPP_WEBHOOK_URL:}
-  api-token: ${WHATSAPP_API_TOKEN:}
 jwt:
   secret: ${JWT_SECRET:MovieBookingLocalJwtSecretKeyChangeMe2026}
   expiration-ms: ${JWT_EXPIRATION_MS:2592000000}
@@ -45,9 +42,7 @@ app:
   cors-origins: ${FRONTEND_ORIGINS:http://localhost:5173}
   admin:
     mobile: ${ADMIN_MOBILE:}
-sms:
-  webhook-url: ${SMS_WEBHOOK_URL:}
-  api-token: ${SMS_API_TOKEN:}
+    email: ${ADMIN_EMAIL:}
 server:
   error:
     include-message: never

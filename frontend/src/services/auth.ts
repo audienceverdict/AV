@@ -13,17 +13,16 @@ async function request<T>(path:string,options:RequestInit={}):Promise<T>{
  return body as T;
 }
 const mapUser=(u:User):User=>({...u,email:u.email||''});
+export interface EmailOtpResult {registrationRequired:boolean;user:User|null;accessToken:string|null;tokenType:string|null}
 export const authService={
  current:()=>currentUser,
  isAdmin:()=>currentUser?.role==='ADMIN',
- async requestOtp(mobile:string){return request<{success:boolean;message:string;expiresInSeconds:number;resendAfterSeconds:number}>('/auth/otp/request',{method:'POST',body:JSON.stringify({mobile})});},
  async requestEmailOtp(email:string){return request<{success:boolean;message:string;expiresInSeconds:number;resendAfterSeconds:number}>('/auth/email-otp/request',{method:'POST',body:JSON.stringify({email})});},
- async verifyOtp(mobile:string,otp:string){const started=generation;const result=await request<{user:User;accessToken:string;tokenType:string}>('/auth/otp/verify',{method:'POST',body:JSON.stringify({mobile,otp})});if(started!==generation)throw new Error('Sign-in cancelled');localStorage.setItem(TOKEN_KEY,result.accessToken);sessionStorage.setItem(TOKEN_KEY,result.accessToken);currentUser=mapUser(result.user);notify();return currentUser;},
- async verifyEmailOtp(email:string,otp:string){const started=generation;const result=await request<{user:User;accessToken:string;tokenType:string}>('/auth/email-otp/verify',{method:'POST',body:JSON.stringify({email,otp})});if(started!==generation)throw new Error('Sign-in cancelled');localStorage.setItem(TOKEN_KEY,result.accessToken);sessionStorage.setItem(TOKEN_KEY,result.accessToken);currentUser=mapUser(result.user);notify();return currentUser;},
+ async verifyEmailOtp(email:string,otp:string){const started=generation;const result=await request<EmailOtpResult>('/auth/email-otp/verify',{method:'POST',body:JSON.stringify({email,otp})});if(started!==generation)throw new Error('Sign-in cancelled');if(result.registrationRequired)return result;if(!result.user||!result.accessToken)throw new Error('Unable to complete sign-in.');localStorage.setItem(TOKEN_KEY,result.accessToken);sessionStorage.setItem(TOKEN_KEY,result.accessToken);currentUser=mapUser(result.user);notify();return {...result,user:currentUser};},
+ async completeEmailRegistration(email:string,name:string,mobile:string){const started=generation;const result=await request<EmailOtpResult>('/auth/email-otp/register',{method:'POST',body:JSON.stringify({email,name,mobile})});if(started!==generation)throw new Error('Sign-in cancelled');if(!result.user||!result.accessToken)throw new Error('Unable to complete registration.');localStorage.setItem(TOKEN_KEY,result.accessToken);sessionStorage.setItem(TOKEN_KEY,result.accessToken);currentUser=mapUser(result.user);notify();return currentUser;},
  async restore(){const started=generation;if(!token()){currentUser=null;notify();return null;}const user=await request<User>('/auth/me');if(started!==generation)return null;currentUser=mapUser(user);notify();return currentUser;},
  async updateProfile(name:string,email:string){const started=generation;const user=await request<User>('/auth/me',{method:'PUT',body:JSON.stringify({name,email:email.trim()||null})});if(started===generation){currentUser=mapUser(user);notify();}return mapUser(user);},
- async completeRegistration(name:string,email:string){const started=generation;const user=await request<User>('/auth/register',{method:'POST',body:JSON.stringify({name,email:email.trim()||null})});if(started===generation){currentUser=mapUser(user);notify();}return mapUser(user);},
- logout(){generation++;localStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem('av_otp_mobile');sessionStorage.removeItem('av_otp_resend_at');sessionStorage.removeItem('av_otp_expires_at');currentUser=null;notify();}
+ logout(){generation++;localStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem(TOKEN_KEY);sessionStorage.removeItem('av_otp_mobile');sessionStorage.removeItem('av_otp_email');sessionStorage.removeItem('av_otp_method');sessionStorage.removeItem('av_registration_required');sessionStorage.removeItem('av_otp_resend_at');sessionStorage.removeItem('av_otp_expires_at');currentUser=null;notify();}
 };
 export interface UserPage {content:User[];totalPages:number;totalElements:number;number:number}
 export const adminUsers={

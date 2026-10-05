@@ -15,7 +15,7 @@ import java.util.*;
  @Bean SecurityFilterChain security(HttpSecurity http,JwtAuthenticationFilter jwt,ObjectMapper mapper)throws Exception {
  return http.csrf(c->c.disable()).cors(c->{}).sessionManagement(s->s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
  .authorizeHttpRequests(a->a
-  .requestMatchers(HttpMethod.POST,"/api/v1/auth/otp/request","/api/v1/auth/otp/verify","/api/v1/auth/email-otp/request","/api/v1/auth/email-otp/verify").permitAll()
+  .requestMatchers(HttpMethod.POST,"/api/v1/auth/email-otp/request","/api/v1/auth/email-otp/verify","/api/v1/auth/email-otp/register").permitAll()
   .requestMatchers(HttpMethod.GET,"/api/v1/auth/me").authenticated()
   .requestMatchers("/api/v1/admin/**","/api/v1/bookings/admin/**","/api/v1/reviews/admin/**").hasRole("ADMIN")
   .requestMatchers("/api/v1/notifications/admin/**").hasRole("ADMIN")

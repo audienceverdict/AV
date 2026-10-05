@@ -2,7 +2,7 @@
 
 React, TypeScript, Vite. Run `npm install`, then `npm run dev`; on PowerShell use `npm.cmd` if script execution is disabled. Start the backend as described in [../backend/README.md](../backend/README.md).
 
-Authentication uses real mobile OTP APIs, JWTs, `/auth/me`, profile updates and backend-authorized admin user management. The token lives in sessionStorage for reloads within the tab; the user/role are loaded from the backend. Invalid/expired tokens clear the session. There is no fixed OTP or hardcoded admin number. Use your generated code from the backend console in development, or SMS with a configured production provider.
+Authentication uses email OTP, a name/mobile profile step for new accounts, JWTs, `/auth/me`, profile updates and backend-authorized admin user management. The token lives in sessionStorage for reloads within the tab; the user/role are loaded from the backend. Invalid/expired tokens clear the session. There is no fixed OTP or hardcoded admin number. Use the branded code email, or the development backend console when SMTP is not configured.
 
 ## Frontend audit (2026-10-03)
 
@@ -63,7 +63,7 @@ Every public route uses the shared `Layout` with header, navigation, main conten
 | `/movie/:movieId/reviews` | `Reviews` | No to read; login to write | Movie-filtered reviews and review form; submission uses review repository and pending state. |
 | `/reviews` | `Reviews` | No to read; login to write | Tabs, movie filter, written/video review cards; empty state. |
 | `/audience-verdict`, `/about` | `About` | No | Brand explanation, audience value cards, how-it-works and prototype note. |
-| `/login`, `/verify-otp` | `Login` | No | Mobile OTP request/verification, registration/profile completion, error/loading states; real auth API. |
+| `/login`, `/verify-otp` | `Login` | No | Email OTP request/verification and required name/mobile registration for new users; real auth API. |
 | `/my-bookings` | `Bookings` | User | Current-user bookings, cancel action, ticket links, empty state. Booking data is demo repository-backed. |
 | `/booking/:bookingId` | `DigitalTicket` | User/admin | Confirmation, ticket details, download/print; missing/unauthorized ticket empty state. |
 | `/profile` | `Profile` | User | Profile update through backend auth service. |
@@ -106,10 +106,10 @@ All auth and catalogue requests use `/api/v1`; Vite proxies `/api` to port 8080.
 
 | Endpoint(s) | Method | Use / payload |
 |---|---|---|
-| `/auth/otp/request` | POST | `{mobile}`; OTP login, response includes success/message/expiry/resend durations. |
-| `/auth/otp/verify` | POST | `{mobile, otp}`; returns user/access token/type. |
+| `/auth/email-otp/request` | POST | `{email}`; send sign-in code, including for a new account. |
+| `/auth/email-otp/verify` | POST | `{email, otp}`; signs in or begins registration. |
 | `/auth/me` | GET, PUT | Restore/current user; PUT `{name,email|null}` for profile. |
-| `/auth/register` | POST | `{name,email|null}` after OTP registration. |
+| `/auth/email-otp/register` | POST | `{email,name,mobile}` after verified email OTP. |
 | `/admin/users?page=…&size=20` | GET | Admin audience pages. |
 | `/admin/users/:id/role`, `/status` | PATCH | `{role}` or `{enabled}`. |
 | `/movies?size=200`, `/theatres?size=200` | GET | Paged catalogue; loader reads `content`. |

@@ -1,4 +1,4 @@
-﻿import type { Data, Booking, User } from '../types';
+import type { Data, Booking, User } from '../types';
 import { seed, seatsFor } from '../data/seed';
 const KEY='av_data_v2';
 const memoryStore=new Map<string,unknown>();
@@ -21,7 +21,7 @@ export async function createScreen(theatreId:string, screen:any){ const payload=
 export interface PaymentService {pay(amount:number):Promise<{success:boolean;reference:string}>}
 export const mockPaymentService:PaymentService={async pay(){await new Promise(r=>setTimeout(r,600));return {success:true,reference:`DEMO-${Date.now()}`};}};
 export interface NotificationService {prepare(booking:Booking):Promise<string>}
-export const mockNotificationService:NotificationService={async prepare(){return 'Demo: ticket email and mobile confirmation prepared. Nothing was sent.';}};
+export const mockNotificationService:NotificationService={async prepare(){return 'Demo: branded ticket email prepared. Nothing was sent.';}};
 export {authService} from './auth';
 export async function adminConfirmBooking(id:string){const saved=await apiWrite<any>(`/bookings/admin/${encodeURIComponent(id)}/confirm`,{method:'POST'});const normalized={...saved,snapshot:{movie:saved.movie,theatre:saved.theatre,screen:saved.screen,date:saved.date,time:saved.time,mobile:saved.mobile,email:saved.email}};database.update(data=>{const index=data.bookings.findIndex(item=>item.id===id);if(index>=0)data.bookings[index]={...data.bookings[index],...normalized};});return normalized;}
 export async function adminCancelBooking(id:string,reason:string){return apiWrite<any>(`/bookings/admin/${encodeURIComponent(id)}/cancel`,{method:'POST',body:JSON.stringify({reason})});}
@@ -85,5 +85,5 @@ export async function cancelBooking(id:string,seatIds?:string[]){return apiWrite
 
 
 export async function getAdminWaitingList(){return apiGet<any[]>('/waiting-list/admin');}
-export async function sendAdminCampaign(payload:{target:'ALL_USERS'|'SHOW_BOOKERS'|'MOVIE_BOOKERS';channel:'EMAIL'|'WHATSAPP'|'BOTH';subject:string;message:string;showId?:string;movieId?:string;status?:string;sortBy?:string;sortDirection?:string}){return apiWrite<{recipients:number;sent:number;skipped:number;channel:string}>('/notifications/admin/campaigns',{method:'POST',body:JSON.stringify(payload)});}
-export async function sendShowReminder(showId:string,channel:'EMAIL'|'WHATSAPP'|'BOTH'='BOTH'){return apiWrite<{recipients:number;sent:number;skipped:number;channel:string}>(`/notifications/admin/shows/${encodeURIComponent(showId)}/reminder?channel=${channel}`,{method:'POST'});}
+export async function sendAdminCampaign(payload:{target:'ALL_USERS'|'SHOW_BOOKERS'|'MOVIE_BOOKERS';subject:string;message:string;showId?:string;movieId?:string;status?:string;sortBy?:string;sortDirection?:string}){return apiWrite<{recipients:number;sent:number;skipped:number;channel:string}>('/notifications/admin/campaigns',{method:'POST',body:JSON.stringify(payload)});}
+export async function sendShowReminder(showId:string){return apiWrite<{recipients:number;sent:number;skipped:number;channel:string}>(`/notifications/admin/shows/${encodeURIComponent(showId)}/reminder`,{method:'POST'});}
