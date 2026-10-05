@@ -26,3 +26,4 @@ mvn test
 
 Backend tests exercise the real Spring Security chain, Flyway migrations and repositories with H2 in MySQL mode. The same integration suite runs on MySQL 8 through Testcontainers when Docker is available; it is explicitly skipped otherwise. H2 passing alone does not verify MySQL deployment.
 "# AV" 
+"# AV" 
