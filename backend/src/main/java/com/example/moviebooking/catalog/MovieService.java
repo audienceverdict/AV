@@ -11,7 +11,7 @@ import java.util.UUID;
  public Page<Movie> list(MovieStatus status,int page,int size){var p=PageRequest.of(page,Math.min(size,100),Sort.by("releaseDate").descending().and(Sort.by("title")));return status==null?movies.findAll(p):movies.findByStatus(status,p);}
  public Movie get(String id){return movies.findById(id).orElseThrow(()->new ApiException(404,"MOVIE_NOT_FOUND","Movie not found"));}
  @Transactional public Movie create(Movie movie){movie.id=UUID.randomUUID().toString();return movies.save(movie);}
- @Transactional public Movie update(String id,Movie next){var m=get(id);m.title=next.title;m.posterUrl=next.posterUrl;m.backdropUrl=next.backdropUrl;m.trailerUrl=next.trailerUrl;m.description=next.description;m.genre=next.genre;m.language=next.language;m.duration=next.duration;m.releaseDate=next.releaseDate;m.certification=next.certification;m.director=next.director;m.cast=next.cast;m.production=next.production;m.status=next.status;return m;}
+ @Transactional public Movie update(String id,Movie next){var m=get(id);m.title=next.title;m.posterUrl=next.posterUrl;m.posterImages=next.posterImages==null?new java.util.ArrayList<>():new java.util.ArrayList<>(next.posterImages);m.backdropUrl=next.backdropUrl;m.trailerUrl=next.trailerUrl;m.description=next.description;m.genre=next.genre;m.language=next.language;m.duration=next.duration;m.releaseDate=next.releaseDate;m.certification=next.certification;m.director=next.director;m.cast=next.cast;m.production=next.production;m.status=next.status;return m;}
  @Transactional public void delete(String id){
   get(id);
   var shows=em.createNativeQuery("select id from shows where movie_id=?1").setParameter(1,id).getResultList();

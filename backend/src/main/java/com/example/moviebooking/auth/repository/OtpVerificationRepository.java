@@ -5,6 +5,8 @@ import java.time.Instant;
 import java.util.Optional;
 public interface OtpVerificationRepository extends JpaRepository<OtpVerification,Long> {
  Optional<OtpVerification> findFirstByMobileOrderByIdDesc(String mobile);
+ Optional<OtpVerification> findFirstByMobileAndChannelOrderByIdDesc(String mobile,String channel);
+ long countByMobileAndChannelAndCreatedAtAfter(String mobile,String channel,Instant since);
  long countByMobileAndCreatedAtAfter(String mobile,Instant since);
  long deleteByCreatedAtBefore(Instant cutoff);
 }

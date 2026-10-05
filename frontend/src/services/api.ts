@@ -83,3 +83,7 @@ export async function claimWaitingList(id:string){return apiWrite<any>(`/waiting
 export async function getNotifications(){return apiGet<any[]>('/notifications');}
 export async function cancelBooking(id:string,seatIds?:string[]){return apiWrite<any>(`/bookings/${encodeURIComponent(id)}/cancel`,{method:'POST',body:JSON.stringify({seatIds})});}
 
+
+export async function getAdminWaitingList(){return apiGet<any[]>('/waiting-list/admin');}
+export async function sendAdminCampaign(payload:{target:'ALL_USERS'|'SHOW_BOOKERS'|'MOVIE_BOOKERS';channel:'EMAIL'|'WHATSAPP'|'BOTH';subject:string;message:string;showId?:string;movieId?:string;status?:string;sortBy?:string;sortDirection?:string}){return apiWrite<{recipients:number;sent:number;skipped:number;channel:string}>('/notifications/admin/campaigns',{method:'POST',body:JSON.stringify(payload)});}
+export async function sendShowReminder(showId:string,channel:'EMAIL'|'WHATSAPP'|'BOTH'='BOTH'){return apiWrite<{recipients:number;sent:number;skipped:number;channel:string}>(`/notifications/admin/shows/${encodeURIComponent(showId)}/reminder?channel=${channel}`,{method:'POST'});}

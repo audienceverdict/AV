@@ -1,4 +1,4 @@
-export interface Movie {id:string;title:string;posterUrl:string;backdropUrl?:string;trailerUrl:string;description:string;genre:string[];language:string;duration:number;releaseDate:string;certification:string;director:string;cast:string[];production:string;status:'UPCOMING'|'ACTIVE'|'ENDED'}
+export interface Movie {id:string;title:string;posterUrl:string;posterImages?:string[];backdropUrl?:string;trailerUrl:string;description:string;genre:string[];language:string;duration:number;releaseDate:string;certification:string;director:string;cast:string[];production:string;status:'UPCOMING'|'ACTIVE'|'ENDED'}
 export interface VenueMedia {id:string;type:'IMAGE'|'VIDEO';url:string;title:string}
 export interface Theatre {id:string;name:string;address:string;city:string;state:string;contact:string;status:'ACTIVE'|'INACTIVE';mapUrl?:string;media?:VenueMedia[]}
 export interface Seat {id:string;category:'REGULAR'|'PREMIUM'|'RECLINER'|'SOFA'|'WHEELCHAIR'|string;disabled:boolean;color?:string;row?:number;column?:number}

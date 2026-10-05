@@ -7,7 +7,7 @@ Java 21, Maven, Spring Boot 3.4.13, MySQL 8. Flyway owns schema changes; Hiberna
 Use a dedicated local MySQL user with permission to create the database. The backend JDBC URL includes `createDatabaseIfNotExist=true`, so MySQL creates `movie_booking` automatically on first startup when the user has enough privileges.
 
 ```sql
-CREATE USER 'movie_user'@'localhost' IDENTIFIED BY 'movie_password';
+CREATE USER 'movie_user'@'localhost' IDENTIFIED BY '<choose-a-local-password>';
 GRANT ALL PRIVILEGES ON *.* TO 'movie_user'@'localhost';
 FLUSH PRIVILEGES;
 ```
@@ -19,20 +19,25 @@ Host: localhost
 Port: 3306
 Database: movie_booking
 Username: movie_user
-Password: movie_password
+Password: your locally configured database password
 JDBC URL: jdbc:mysql://localhost:3306/movie_booking?createDatabaseIfNotExist=true
 ```
 
+Copy the example file to `.env` in this directory and fill in your local database credentials. Spring Boot imports this file automatically when the application starts from `backend`; operating-system environment variables still take precedence.
+
 ```powershell
+Copy-Item .env.example .env
 $env:DB_URL = 'jdbc:mysql://localhost:3306/movie_booking?createDatabaseIfNotExist=true'
 $env:DB_USERNAME = 'movie_user'
-$env:DB_PASSWORD = 'movie_password'
+$env:DB_PASSWORD = '<your-local-database-password>'
 $env:JWT_SECRET = [Convert]::ToBase64String([Security.Cryptography.RandomNumberGenerator]::GetBytes(48))
 $env:SPRING_PROFILES_ACTIVE = 'dev'
 # Optional: your own mobile number; never use a shared demo identity.
 $env:ADMIN_MOBILE = '+91YOUR_NUMBER'
 mvn spring-boot:run
 ```
+
+For production, also set `SMTP_HOST`, `SMTP_PORT`, `SMTP_USERNAME`, `SMTP_PASSWORD`, `SMTP_AUTH`, `SMTP_STARTTLS`, and `NOTIFICATION_EMAIL_FROM` in the environment or `.env`. Keep `.env` private; the checked-in example contains blank secret fields.
 
 Omit `ADMIN_MOBILE` for user-only development. When configured under `dev`, startup creates/promotes that account to ADMIN. Every login still requires its generated OTP. The seed never runs without the dev profile.
 

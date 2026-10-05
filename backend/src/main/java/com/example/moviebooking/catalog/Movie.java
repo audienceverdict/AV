@@ -7,6 +7,7 @@ public class Movie {
  @Id @Column(length=36) public String id=UUID.randomUUID().toString();
  @Column(nullable=false,length=200) public String title;
  @Column(nullable=false,length=2000) public String posterUrl;
+ @ElementCollection(fetch=FetchType.EAGER) @CollectionTable(name="movie_posters",joinColumns=@JoinColumn(name="movie_id")) @OrderColumn(name="poster_order") @Lob @Column(name="poster_url",nullable=false) public List<String> posterImages=new ArrayList<>();
  @Column(length=2000) public String backdropUrl;
  @Column(length=2000) public String trailerUrl;
  @Column(length=2000) public String description;

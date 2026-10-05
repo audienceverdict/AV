@@ -1,0 +1,1 @@
+ALTER TABLE otp_verifications ADD COLUMN channel VARCHAR(16) NOT NULL DEFAULT 'SMS';

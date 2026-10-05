@@ -1,0 +1,1 @@
+ALTER TABLE otp_verifications MODIFY COLUMN mobile VARCHAR(255) NOT NULL;

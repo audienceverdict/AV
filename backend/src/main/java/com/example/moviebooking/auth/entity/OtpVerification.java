@@ -4,7 +4,8 @@ import java.time.Instant;
 @Entity @Table(name="otp_verifications")
 public class OtpVerification {
  @Id @GeneratedValue(strategy=GenerationType.IDENTITY) public Long id;
- @Column(nullable=false,length=20) public String mobile;
+ @Column(nullable=false,length=255) public String mobile;
+ @Column(nullable=false,length=16) public String channel="SMS";
  @Column(nullable=false) public String otpHash;
  @Column(nullable=false) public Instant expiresAt;
  @Column(nullable=false) public int attemptCount;

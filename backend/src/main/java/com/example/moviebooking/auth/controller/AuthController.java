@@ -8,6 +8,8 @@ import java.security.Principal;
  private final AuthService service;public AuthController(AuthService service){this.service=service;}
  @PostMapping("/otp/request") public OtpResponse request(@Valid @RequestBody OtpRequest r){return service.request(r);}
  @PostMapping("/otp/verify") public AuthResponse verify(@Valid @RequestBody OtpVerifyRequest r){return service.verify(r);}
+ @PostMapping("/email-otp/request") public OtpResponse requestEmail(@Valid @RequestBody EmailOtpRequest r){return service.requestEmail(r);}
+ @PostMapping("/email-otp/verify") public AuthResponse verifyEmail(@Valid @RequestBody EmailOtpVerifyRequest r){return service.verifyEmail(r);}
  @GetMapping("/me") public UserResponse me(Principal p){return service.current(p.getName());}
  @PutMapping("/me") public UserResponse update(Principal p,@Valid @RequestBody UpdateProfileRequest r){return service.update(p.getName(),r);}
  @PostMapping("/register") public UserResponse register(Principal p,@Valid @RequestBody RegistrationRequest r){return service.register(p.getName(),r);}

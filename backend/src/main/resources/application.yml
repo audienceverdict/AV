@@ -1,10 +1,12 @@
 spring:
+  config:
+    import: optional:file:.env[.properties]
   profiles:
     default: dev
   datasource:
     url: ${DB_URL:jdbc:mysql://localhost:3306/movie_booking?createDatabaseIfNotExist=true}
-    username: ${DB_USERNAME:movie_user}
-    password: ${DB_PASSWORD:movie_password}
+    username: ${DB_USERNAME:}
+    password: ${DB_PASSWORD:}
   jpa:
     open-in-view: false
     hibernate:
@@ -14,6 +16,19 @@ spring:
   jackson:
     deserialization:
       fail-on-unknown-properties: true
+  mail:
+    host: ${SMTP_HOST:}
+    port: ${SMTP_PORT:587}
+    username: ${SMTP_USERNAME:}
+    password: ${SMTP_PASSWORD:}
+    properties:
+      mail.smtp.auth: ${SMTP_AUTH:true}
+      mail.smtp.starttls.enable: ${SMTP_STARTTLS:true}
+notifications:
+  email-from: ${NOTIFICATION_EMAIL_FROM:}
+whatsapp:
+  webhook-url: ${WHATSAPP_WEBHOOK_URL:}
+  api-token: ${WHATSAPP_API_TOKEN:}
 jwt:
   secret: ${JWT_SECRET:MovieBookingLocalJwtSecretKeyChangeMe2026}
   expiration-ms: ${JWT_EXPIRATION_MS:2592000000}

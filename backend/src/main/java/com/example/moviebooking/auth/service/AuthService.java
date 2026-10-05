@@ -12,6 +12,8 @@ import java.util.Locale;
  private final UserRepository users; private final OtpService otp; private final MobileNormalizer mobile; private final JwtService jwt;
  public AuthService(UserRepository users,OtpService otp,MobileNormalizer mobile,JwtService jwt){this.users=users;this.otp=otp;this.mobile=mobile;this.jwt=jwt;}
  public OtpResponse request(OtpRequest r){return otp.request(mobile.normalize(r.mobile()));}
+ public OtpResponse requestEmail(EmailOtpRequest r){String address=r.email().trim().toLowerCase(Locale.ROOT);if(users.findByEmailIgnoreCase(address).filter(u->u.enabled).isEmpty())throw new ApiException(404,"EMAIL_NOT_REGISTERED","No enabled account uses this email address");return otp.requestEmail(address);}
+ @Transactional(noRollbackFor=ApiException.class) public AuthResponse verifyEmail(EmailOtpVerifyRequest r){String address=r.email().trim().toLowerCase(Locale.ROOT);otp.verifyEmail(address,r.otp());var user=users.findByEmailIgnoreCase(address).filter(u->u.enabled).orElseThrow(()->new ApiException(401,"UNAUTHORIZED","Unable to authenticate this account"));return new AuthResponse(UserResponse.of(user),jwt.generate(user),"Bearer");}
  @Transactional(noRollbackFor=ApiException.class) public AuthResponse verify(OtpVerifyRequest r){
  String number=mobile.normalize(r.mobile());otp.verify(number,r.otp());
  var user=users.findByMobile(number).orElseGet(()->{var u=new User();u.mobile=number;return users.save(u);});
