@@ -14,7 +14,10 @@ the /api/ prefix. Keep MySQL and port 8080 private.
 
 ## Database and configuration
 
-In MySQL, create a dedicated application account, substituting a strong password:
+Your VM uses MySQL 8.4.11 at localhost:3306, database movie_booking, and user
+movie_user. Set DB_PASSWORD in /etc/audience-verdict/backend.env to the password
+configured for that account. Do not commit it to Git. If this database and user
+already exist, skip the following SQL. For a new VM:
 
 ```sql
 CREATE DATABASE IF NOT EXISTS movie_booking;
@@ -34,8 +37,9 @@ sudo nano /etc/audience-verdict/backend.env
 
 Replace every placeholder. Generate JWT_SECRET using `openssl rand -hex 48` and
 keep it stable across deployments. Configure a working SMTP account: production
-OTP login requires email delivery. Do not copy the local root/root credentials
-to the server. The environment file belongs on the VM, outside Git.
+OTP login requires email delivery. For the configured Gmail sender, supply its
+app password in SMTP_PASSWORD. The environment file belongs on the VM, outside
+Git. NOTIFICATION_EMAIL_FROM must be audienceverdict@gmail.com without spaces.
 
 ## Build and start
 
