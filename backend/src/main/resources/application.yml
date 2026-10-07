@@ -44,9 +44,15 @@ app:
     mobile: ${ADMIN_MOBILE:}
     email: ${ADMIN_EMAIL:}
 server:
+  port: 443
+  ssl:
+    enabled: true
+    key-store: file:/opt/keystore.p12
+    key-store-password: ${SSL_KEYSTORE_PASSWORD}
+    key-store-type: PKCS12
+    key-alias: springboot
   error:
     include-message: never
-
 booking:
   seat-hold-minutes: ${BOOKING_SEAT_HOLD_MINUTES:5}
   waiting-list-offer-minutes: ${BOOKING_WAITING_LIST_OFFER_MINUTES:5}
