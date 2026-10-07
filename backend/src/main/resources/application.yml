@@ -5,14 +5,14 @@ spring:
     default: dev
   datasource:
     url: ${DB_URL:jdbc:mysql://localhost:3306/movie_booking?createDatabaseIfNotExist=true}
-    username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:root}
+    username: ${DB_USERNAME:}
+    password: ${DB_PASSWORD:}
   jpa:
     open-in-view: false
     hibernate:
       ddl-auto: validate
   flyway:
-    enabled: false
+    enabled: true
   jackson:
     deserialization:
       fail-on-unknown-properties: true
@@ -24,6 +24,9 @@ spring:
     properties:
       mail.smtp.auth: ${SMTP_AUTH:true}
       mail.smtp.starttls.enable: ${SMTP_STARTTLS:true}
+      mail.smtp.connectiontimeout: ${SMTP_CONNECTION_TIMEOUT_MS:10000}
+      mail.smtp.timeout: ${SMTP_TIMEOUT_MS:10000}
+      mail.smtp.writetimeout: ${SMTP_WRITE_TIMEOUT_MS:10000}
 notifications:
   email-from: ${NOTIFICATION_EMAIL_FROM:}
 jwt:
@@ -39,20 +42,14 @@ auth:
     max-attempts: ${OTP_MAX_ATTEMPTS:5}
     max-requests-per-hour: ${OTP_MAX_REQUESTS_PER_HOUR:10}
 app:
-  cors-origins: ${FRONTEND_ORIGINS:http://localhost:5173}
+  cors-origins: ${FRONTEND_ORIGINS:*}
   admin:
     mobile: ${ADMIN_MOBILE:}
     email: ${ADMIN_EMAIL:}
 server:
-  port: 443
-  ssl:
-    enabled: true
-    key-store: file:/opt/keystore.p12
-    key-store-password: ${SSL_KEYSTORE_PASSWORD}
-    key-store-type: PKCS12
-    key-alias: springboot
   error:
     include-message: never
+
 booking:
   seat-hold-minutes: ${BOOKING_SEAT_HOLD_MINUTES:5}
   waiting-list-offer-minutes: ${BOOKING_WAITING_LIST_OFFER_MINUTES:5}
