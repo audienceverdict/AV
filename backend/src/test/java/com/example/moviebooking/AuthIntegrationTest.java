@@ -36,7 +36,9 @@ abstract class AuthIntegrationTest {
  @Test void newAccountRequiresVerifiedEmailAndCompleteProfile()throws Exception{
  request("john@example.com",200);var pending=verify("john@example.com",codes.get("john@example.com"),200);assertTrue(pending.path("registrationRequired").asBoolean());assertTrue(pending.get("accessToken").isNull());
  register("john@example.com","John","bad",400);var auth=register("john@example.com","John","9876543210",200);assertEquals("john@example.com",auth.at("/user/email").asText());assertEquals("John",auth.at("/user/name").asText());assertEquals("+919876543210",auth.at("/user/mobile").asText());assertEquals(1,users.count());
- verify("john@example.com",codes.get("john@example.com"),400);var again=login("john@example.com","9876543210");assertEquals(auth.at("/user/id"),again.at("/user/id"));
+ verify("john@example.com",codes.get("john@example.com"),400);register("john@example.com","John","9876543210",400);
+ var consumed=otps.findFirstByMobileAndChannelOrderByIdDesc("john@example.com","EMAIL").orElseThrow();consumed.createdAt=Instant.now().minusSeconds(31);otps.save(consumed);
+ var again=login("john@example.com","9876543210");assertEquals(auth.at("/user/id"),again.at("/user/id"));verify("john@example.com",codes.get("john@example.com"),400);
  }
  @Test void otpHashDeliveryExpiryAndLimits()throws Exception{
  request("john@example.com",200);String code=codes.get("john@example.com");assertTrue(code.matches("[0-9]{6}"));var record=otps.findFirstByMobileAndChannelOrderByIdDesc("john@example.com","EMAIL").orElseThrow();assertNotEquals(code,record.otpHash);assertTrue(new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder().matches(code,record.otpHash));request("john@example.com",429);

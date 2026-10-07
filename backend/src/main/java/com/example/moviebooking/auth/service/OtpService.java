@@ -45,8 +45,8 @@ import java.time.Instant;
  if(!hashes.matches(code,otp.otpHash))throw invalid();
  otp.verified=true;records.save(otp);
  }
- @Transactional public void requireVerifiedEmail(String address){lock(address);var otp=records.findFirstByMobileAndChannelOrderByIdDesc(address,"EMAIL").orElseThrow(()->invalid());if(!otp.verified||!otp.expiresAt.isAfter(Instant.now()))throw invalid();}
- @Transactional public void consumeVerifiedEmail(String address){requireVerifiedEmail(address);var otp=records.findFirstByMobileAndChannelOrderByIdDesc(address,"EMAIL").orElseThrow(()->invalid());otp.verified=false;records.save(otp);}
+ @Transactional(noRollbackFor=ApiException.class) public void requireVerifiedEmail(String address){lock(address);var otp=records.findFirstByMobileAndChannelOrderByIdDesc(address,"EMAIL").orElseThrow(()->invalid());if(!otp.verified||!otp.expiresAt.isAfter(Instant.now()))throw invalid();}
+ @Transactional public void consumeVerifiedEmail(String address){requireVerifiedEmail(address);var otp=records.findFirstByMobileAndChannelOrderByIdDesc(address,"EMAIL").orElseThrow(()->invalid());otp.verified=false;otp.expiresAt=Instant.now();records.save(otp);}
  private ApiException invalid(){return new ApiException(400,"INVALID_OTP","The code is invalid or expired");}
  // Keep request history beyond the hourly rate-limit window, even for expired codes.
  @Scheduled(fixedDelay=3600000) @Transactional public void cleanup(){records.deleteByCreatedAtBefore(Instant.now().minusSeconds(Math.max(86400,expiry+3600)));}
