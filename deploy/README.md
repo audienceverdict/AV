@@ -1,17 +1,16 @@
 # Hostinger VPS deployment
 
-These files target an Ubuntu VPS with systemd and Nginx. Confirm the VM operating
+These files target an Ubuntu VPS with systemd. Confirm the VM operating
 system before running the commands. This is not a shared-hosting deployment.
-The public site is https://audienceverdict.in; Nginx serves the React build and
-proxies /api/ to Spring Boot on localhost:8080.
+The public site is https://audienceverdict.in. Use the existing web server and
+HTTPS setup. The backend listens on localhost:8080.
 
 ## Prerequisites
 
-Install Git, Java 21, Maven, Node.js 22 with npm, MySQL 8, Nginx, and Certbot
-with its Nginx plugin. Point the domain's DNS A record to the VPS IP. Configure
-www as well if using it. Allow SSH and ports 80/443; keep MySQL and 8080 private.
-If a hosting control panel already manages Nginx, integrate the locations into
-its site configuration rather than replacing its configuration.
+Install Git, Java 21, Maven, Node.js 22 with npm, and MySQL 8. Keep the existing
+web server, DNS, and HTTPS configuration. The existing site must serve the React
+build with SPA fallback and forward /api/ to http://127.0.0.1:8080, preserving
+the /api/ prefix. Keep MySQL and port 8080 private.
 
 ## Database and configuration
 
@@ -46,20 +45,13 @@ sudo mvn -DskipTests package
 cd ../frontend
 sudo npm ci
 sudo npm run build
-sudo install -d /var/www/audience-verdict
-sudo cp -a dist/. /var/www/audience-verdict/
 sudo cp ../deploy/audience-verdict.service /etc/systemd/system/
-sudo cp ../deploy/nginx.conf /etc/nginx/sites-available/audience-verdict
-sudo ln -s /etc/nginx/sites-available/audience-verdict /etc/nginx/sites-enabled/audience-verdict
-sudo nginx -t
 sudo systemctl daemon-reload
 sudo systemctl enable --now audience-verdict
-sudo systemctl reload nginx
-sudo certbot --nginx -d audienceverdict.in -d www.audienceverdict.in
 ```
 
-Only request the www certificate if its DNS points to this VPS. Review existing
-Nginx sites for conflicting domain names before enabling this site. Production
+Publish frontend/dist to your existing site's document root using your current
+deployment process. No web server or certificate changes are included. Production
 Flyway applies pending MySQL migrations on startup; back up an existing database
 before updating. The build above skips integration tests because they require
 the separate movie_booking_test database; run them before release in a test environment.
@@ -77,5 +69,5 @@ login. The dev administrator seed does not run in production; provision the
 first administrator through a controlled database procedure after registration.
 
 For updates, pull the reviewed commit in /opt/audience-verdict, repeat the builds
-and frontend copy, then run `sudo systemctl restart audience-verdict`. These
+and publish frontend/dist, then run `sudo systemctl restart audience-verdict`. These
 commands are a manual deployment, not automatic deployment on GitHub push.
