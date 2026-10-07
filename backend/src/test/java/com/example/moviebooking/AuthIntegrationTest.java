@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest @AutoConfigureMockMvc @ActiveProfiles({"test","dev"})
-class AuthIntegrationTest {
+abstract class AuthIntegrationTest {
  @Autowired MockMvc mvc; @Autowired ObjectMapper json; @Autowired UserRepository users;
  @Autowired OtpVerificationRepository otps; @Autowired JwtService jwt;
  @MockitoBean EmailProvider email;

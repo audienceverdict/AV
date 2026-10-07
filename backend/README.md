@@ -76,4 +76,8 @@ Use edge-level IP/global request limits for public email OTP endpoints.
 
 ## Tests
 
-`mvn test` runs endpoint, persistence, concurrency, OTP, profile, JWT, CORS and authorization checks with H2. `mvn package` produces the executable jar in `target`.
+`mvn test` runs the integration tests against `localhost:3306/movie_booking_test` using the MySQL Flyway migrations. The test profile uses the local `root` account and reads its password from `DB_PASSWORD` (or the backend `.env` file); it never uses the application database. The test database must already exist. Tests do not use H2, Docker, or Testcontainers.
+
+The application database URL remains configurable for deployment with `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USERNAME`, and `DB_PASSWORD`. `DB_URL` can also be set to override the composed URL. Production defaults to the separate `movie_booking` database.
+
+`mvn package` produces the executable jar in `target`.

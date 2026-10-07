@@ -4,7 +4,7 @@ spring:
   profiles:
     default: dev
   datasource:
-    url: ${DB_URL:jdbc:mysql://localhost:3306/movie_booking?createDatabaseIfNotExist=true}
+    url: ${DB_URL:jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:movie_booking}?createDatabaseIfNotExist=true}
     username: ${DB_USERNAME:}
     password: ${DB_PASSWORD:}
   jpa:

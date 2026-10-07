@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+jwt:
+  secret: ${JWT_SECRET}
+  expiration-ms: ${JWT_EXPIRATION_MS:3600000}
+app:
+  cors-origins: ${FRONTEND_ORIGINS:https://audienceverdict.in}
+server:
+  address: 127.0.0.1
+  forward-headers-strategy: native

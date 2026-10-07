@@ -1,0 +1,17 @@
+[Unit]
+Description=Audience Verdict backend
+After=network.target mysql.service
+
+[Service]
+User=audience-verdict
+WorkingDirectory=/opt/audience-verdict/backend
+EnvironmentFile=/etc/audience-verdict/backend.env
+ExecStart=/usr/bin/java -jar /opt/audience-verdict/backend/target/moviebooking-1.0.0.jar
+Restart=on-failure
+RestartSec=5
+NoNewPrivileges=true
+PrivateTmp=true
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

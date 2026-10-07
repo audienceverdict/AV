@@ -1,5 +1,7 @@
 # Audience Verdict
 
+For the production VM setup, see [Hostinger VPS deployment](deploy/README.md).
+
 - `frontend/`: React + TypeScript application, connected to the authentication API.
 - `backend/`: Spring Boot authentication and user management, MySQL and Flyway.
 
