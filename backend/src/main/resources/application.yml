@@ -12,7 +12,7 @@ spring:
     hibernate:
       ddl-auto: validate
   flyway:
-    enabled: true
+    enabled: false
   jackson:
     deserialization:
       fail-on-unknown-properties: true
