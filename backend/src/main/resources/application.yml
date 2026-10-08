@@ -5,8 +5,8 @@ spring:
     default: dev
   datasource:
     url: ${DB_URL:jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:movie_booking}?createDatabaseIfNotExist=true}
-    username: ${DB_USERNAME:}
-    password: ${DB_PASSWORD:}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:root}
   jpa:
     open-in-view: false
     hibernate:
